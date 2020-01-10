@@ -19,5 +19,6 @@ export default async (req, res) => {
     res.status(401);
     return;
   }
+
   res.status(200).json(tokens);
 };

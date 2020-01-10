@@ -9,7 +9,7 @@ const Authenticate = ({ tokens }) => {
       return;
     }
 
-    Router.replace("/notAuthenticated");
+    // Router.replace("/notAuthenticated");
   }, [tokens]);
 
   return (
@@ -24,12 +24,25 @@ Authenticate.getInitialProps = async ({ query }) => {
 
   const url = `http://localhost:8009/api/authenticate?code=${authorizationCode}`;
 
-  let tokens;
+  let tokens, exchangeToken;
   try {
     tokens = await fetch(url);
     tokens = await tokens.json();
   } catch (error) {
+    console.log("there is an error");
     return { tokens: null };
+  }
+  console.log("fetch profile");
+  try {
+    exchangeToken = await fetch(`http://localhost:8009/api/profile`, {
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`
+      }
+    });
+    exchangeToken = await exchangeToken.json();
+    console.log("EXCHANGE", exchangeToken);
+  } catch (error) {
+    console.log(error);
   }
 
   return { tokens };
